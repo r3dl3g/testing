@@ -35,15 +35,15 @@ namespace {
 }
 
 void run_test_ (const std::string& name, testing::test_function& fn) {
-  std::cout << name << " started";
+  std::cout << name << " started" << std::endl;
   ++guipp_test_count;
   try {
-    fn();\
-    std::cout << name << " passed";\
+    fn();
+    std::cout << name << " passed" << std::endl;
 
   } catch (std::exception& ex) {
     ++guipp_failed_test_count;
-    std::cerr << name << " Test failed with " << ex.what();
+    std::cerr << name << " Test failed with " << ex.what() << std::endl;
   }
 }
 
@@ -54,14 +54,14 @@ int main (int, char*[]) {
   int APIENTRY WinMain (_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPTSTR, _In_ int) {
 #endif // WIN32
 
-  std::cout << "Running tests";
+  std::cout << "Running tests" << std::endl;
 
   test_main();
 
   if (guipp_failed_test_count) {
-    std::cerr << guipp_failed_test_count << " of " << guipp_test_count << " tests failed";
+    std::cerr << guipp_failed_test_count << " of " << guipp_test_count << " tests failed" << std::endl;
   } else {
-    std::cout << "all " << guipp_test_count << " tests passed";
+    std::cout << "all " << guipp_test_count << " tests passed" << std::endl;
   }
   return guipp_failed_test_count;
 }

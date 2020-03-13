@@ -89,7 +89,7 @@ namespace testing {
                   const char* fileName,
                   const int   lineNumber,
                   const Arguments... args) {
-    create_error_message(std::cerr, testValue, expectedValue,
+    create_error_message(std::cerr << std::endl, testValue, expectedValue,
                          testName, expectedName, equality,
                          fileName, lineNumber, args...);
   }
