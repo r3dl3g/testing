@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -133,6 +134,14 @@ namespace testing {
 
   typedef void (test_function)();
 
+  struct start_params {
+    std::vector<std::string> args;
+  #ifdef WIN32
+    HINSTANCE hInstance;
+  #endif // WIN32
+  };
+
+
 } // namespace testing
 
 /**
@@ -140,7 +149,7 @@ namespace testing {
  *
  * Has to be defined by user.
  */
-void test_main ();
+void test_main (const testing::start_params&);
 
 void run_test_ (const std::string& name, testing::test_function& fn);
 

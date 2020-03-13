@@ -8,6 +8,7 @@
 #include <fstream>
 #include <streambuf>
 #include <iomanip>
+#include <iterator>
 
 using namespace std;
 
@@ -47,16 +48,28 @@ void run_test_ (const std::string& name, testing::test_function& fn) {
   }
 }
 
+class delimited : public std::string {};
+
+std::istream& operator>> (std::istream& is, delimited& output) {
+  std::getline(is, output, ' ');
+  return is;
+}
+
 #ifdef X11
-int main (int, char*[]) {
+int main (int argc, char* argv[]) {
+  testing::start_params params = { std::vector<std::string>(argv, argv + argc) };
 #endif // X11
+
 #ifdef WIN32
-  int APIENTRY WinMain (_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPTSTR, _In_ int) {
+int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR lpCmdLine, _In_ int) {
+  std::istringstream iss(lpCmdLine);
+  typedef std::istream_iterator<delimited> iterator;
+  testing::start_params params = { std::vector<std::string>(iterator{iss}, iterator{}), hInstance };
 #endif // WIN32
 
   std::cout << "Running tests" << std::endl;
 
-  test_main();
+  test_main(params);
 
   if (guipp_failed_test_count) {
     std::cerr << guipp_failed_test_count << " of " << guipp_test_count << " tests failed" << std::endl;
