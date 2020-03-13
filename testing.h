@@ -92,7 +92,7 @@ namespace testing {
     create_error_message(std::cerr, testValue, expectedValue,
                          testName, expectedName, equality,
                          fileName, lineNumber, args...);
-    std::cerr << std::endl
+    std::cerr << std::endl;
   }
 
   template<typename T1, typename T2>
