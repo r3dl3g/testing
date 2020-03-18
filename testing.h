@@ -4,6 +4,10 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#ifdef WIN32
+#define NOMINMAX
+#include <windows.h>
+#endif // WIN32
 
 using namespace std;
 
