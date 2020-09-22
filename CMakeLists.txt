@@ -24,8 +24,8 @@ if(NOT TARGET testing)
     set (TESTING_VERSION_PATCH 0)
     set (TESTING_VERSION "${TESTING_VERSION_MAJOR}.${TESTING_VERSION_MINOR}.${TESTING_VERSION_PATCH}")
 
-    set (TESTING_INCLUDE_INSTALL_DIR include/guipp/testing)
-    set (TESTING_LIBRARY_INSTALL_DIR lib/guipp)
+    set (TESTING_INCLUDE_INSTALL_DIR include/testing)
+    set (TESTING_LIBRARY_INSTALL_DIR lib)
 
 if (APPLE)
     add_definitions(-DCOCOA)
