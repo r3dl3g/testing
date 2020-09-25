@@ -4,20 +4,20 @@ project("testing" CXX)
 
 if(NOT TARGET testing)
 
-    set (testing_include
+    set (TESTING_INCLUDE_DIRS
         ${CMAKE_CURRENT_SOURCE_DIR}/..
         ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-    set (testing_defines "-std=c++11")
+    set (TESTING_CXX_FLAGS "-std=c++11")
 
     get_directory_property(hasParent PARENT_DIRECTORY)
     if (hasParent)
-      set (testing_include ${testing_include} PARENT_SCOPE)
-      set (testing_defines ${testing_defines} PARENT_SCOPE)
+      set (TESTING_INCLUDE_DIRS ${TESTING_INCLUDE_DIRS} PARENT_SCOPE)
+      set (TESTING_CXX_FLAGS ${TESTING_CXX_FLAGS} PARENT_SCOPE)
     endif()
 
-    message(STATUS "testing_defines: ${testing_defines}")
+    message(STATUS "TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
 
     set (TESTING_VERSION_MAJOR 1)
     set (TESTING_VERSION_MINOR 0)
@@ -39,8 +39,8 @@ if (BUILD_FOR_ARM)
     add_definitions(-DBUILD_FOR_ARM -Wno-psabi)
 endif ()
 
-    include_directories(${testing_include})
-    add_definitions(${testing_defines})
+    include_directories(${TESTING_INCLUDE_DIRS})
+    add_definitions(${TESTING_CXX_FLAGS})
 
     # header file to pass version settings to the source code
     configure_file (
