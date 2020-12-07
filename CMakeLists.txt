@@ -58,8 +58,9 @@ if(NOT TARGET testing)
 
   add_library(testing ${SOURCE_FILES} ${INCLUDE_FILES})
   set_target_properties(testing PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-    FOLDER libraries)
+                        POSITION_INDEPENDENT_CODE ON
+                        FOLDER libraries
+                        CXX_STANDARD 11)
 
   if (TESTING_STANDALONE_BUILD)
     install(TARGETS testing DESTINATION ${TESTING_LIBRARY_INSTALL_DIR})
