@@ -11,8 +11,6 @@ if(NOT TARGET testing)
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-  set (TESTING_CXX_FLAGS "-std=c++11")
-
   get_directory_property(hasParent PARENT_DIRECTORY)
   if (hasParent)
     set (TESTING_INCLUDE_DIRS ${TESTING_INCLUDE_DIRS} PARENT_SCOPE)
@@ -20,8 +18,6 @@ if(NOT TARGET testing)
   else()
     set (TESTING_STANDALONE_BUILD On)
   endif()
-
-  message(STATUS "TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
 
   set (TESTING_VERSION_MAJOR 1)
   set (TESTING_VERSION_MINOR 0)
@@ -35,9 +31,12 @@ if(NOT TARGET testing)
     add_definitions(-DCOCOA)
   elseif (UNIX)
     add_definitions(-DX11)
+    set (TESTING_CXX_FLAGS "-std=c++11")
   elseif (WINDOWS)
     add_definitions(-DWIN32)
   endif ()
+
+  message(STATUS "TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
 
   if (BUILD_FOR_ARM)
     add_definitions(-DBUILD_FOR_ARM -Wno-psabi)
