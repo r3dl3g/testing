@@ -4,6 +4,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <functional>
 #ifdef WIN32
 #define NOMINMAX
 #include <windows.h>
@@ -85,6 +86,13 @@ namespace testing {
     throw std::runtime_error(os.str());
   }
 
+  typedef void (log_target) (const std::string&);
+  void set_error_log (std::function<log_target>);
+  void set_info_log (std::function<log_target>);
+
+  void log_error (const std::string&);
+  void log_info (const std::string&);
+
   template<typename T1, typename T2, typename ... Arguments>
   void log_err (const T1& testValue,
                   const T2& expectedValue,
@@ -94,10 +102,11 @@ namespace testing {
                   const char* fileName,
                   const int   lineNumber,
                   const Arguments... args) {
-    create_error_message(std::cerr, testValue, expectedValue,
+    std::ostringstream buffer;
+    create_error_message(buffer, testValue, expectedValue,
                          testName, expectedName, equality,
                          fileName, lineNumber, args...);
-    std::cerr << std::endl;
+    log_error(buffer.str());
   }
 
   template<typename T1, typename T2>

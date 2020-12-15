@@ -28,6 +28,30 @@ namespace testing {
     return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
   }
 
+  std::function<log_target> error_log = [] (const std::string& s) {
+    std::cerr << s << std::endl;
+  };
+
+  std::function<log_target> info_log = [] (const std::string& s) {
+    std::cout << s << std::endl;
+  };
+
+  void set_error_log (std::function<log_target> t) {
+    error_log = t;
+  }
+
+  void set_info_log (std::function<log_target> t) {
+    info_log = t;
+  }
+
+  void log_error (const std::string& s) {
+    error_log(s);
+  }
+
+  void log_info (const std::string& s) {
+    info_log(s);
+  }
+
 }
 
 namespace {
@@ -35,16 +59,21 @@ namespace {
   int guipp_test_count = 0;
 }
 
+//struct ostreamfmt {
+
+//};
+#define ostreamfmt(a) static_cast<const std::ostringstream&>(std::ostringstream() << a).str()
+
 void run_test_ (const std::string& name, testing::test_function& fn) {
-  std::cout << name << " started" << std::endl;
+  testing::log_info(ostreamfmt(name << " started"));
   ++guipp_test_count;
   try {
     fn();
-    std::cout << name << " passed" << std::endl;
+    testing::log_info(ostreamfmt(name << " passed"));
 
   } catch (std::exception& ex) {
     ++guipp_failed_test_count;
-    std::cerr << name << " Test failed with " << ex.what() << std::endl;
+    testing::log_error(ostreamfmt(name << " Test failed with " << ex.what()));
   }
 }
 
@@ -67,14 +96,14 @@ int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR 
   testing::start_params params = { std::vector<std::string>(iterator{iss}, iterator{}), hInstance };
 #endif // WIN32
 
-  std::cout << "Running tests" << std::endl;
+  testing::log_info(ostreamfmt("Running tests"));
 
   test_main(params);
 
   if (guipp_failed_test_count) {
-    std::cerr << guipp_failed_test_count << " of " << guipp_test_count << " tests failed" << std::endl;
+    testing::log_error(ostreamfmt(guipp_failed_test_count << " of " << guipp_test_count << " tests failed"));
   } else {
-    std::cout << "all " << guipp_test_count << " tests passed" << std::endl;
+    testing::log_info(ostreamfmt("all " << guipp_test_count << " tests passed"));
   }
   return guipp_failed_test_count;
 }
