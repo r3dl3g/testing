@@ -51,6 +51,9 @@ namespace testing {
 
   } // namespace detail
 
+  void set_test_init (std::function<void()>);
+  void set_test_fini (std::function<void()>);
+
   template<typename T1, typename T2, typename ... Arguments>
   void create_error_message (std::ostream& os,
                              const T1& testValue,

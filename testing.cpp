@@ -52,6 +52,17 @@ namespace testing {
     info_log(s);
   }
 
+  std::function<void()> test_init;
+  std::function<void()> test_fini;
+
+  void set_test_init (std::function<void()> f) {
+    test_init = f;
+  }
+
+  void set_test_fini (std::function<void()> f) {
+    test_fini = f;
+  }
+
 }
 
 namespace {
@@ -96,14 +107,29 @@ int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR 
   testing::start_params params = { std::vector<std::string>(iterator{iss}, iterator{}), hInstance };
 #endif // WIN32
 
+  if (testing::test_init) {
+    testing::test_init();
+  }
+
   testing::log_info(ostreamfmt("Running tests"));
 
-  test_main(params);
+  try {
+    test_main(params);
+  } catch (std::exception& ex) {
+    testing::log_error(ostreamfmt("Test failed with " << ex.what()));
+  } catch (...) {
+    testing::log_error("Test failed unknown");
+  }
 
   if (guipp_failed_test_count) {
     testing::log_error(ostreamfmt(guipp_failed_test_count << " of " << guipp_test_count << " tests failed"));
   } else {
     testing::log_info(ostreamfmt("all " << guipp_test_count << " tests passed"));
   }
+
+  if (testing::test_fini) {
+    testing::test_fini();
+  }
+
   return guipp_failed_test_count;
 }
