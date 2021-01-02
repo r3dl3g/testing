@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #ifdef WIN32
+#undef NOMINMAX
 #define NOMINMAX
 #include <windows.h>
 #endif // WIN32
