@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project("testing" CXX)
 
+cmake_policy(SET CMP0077 NEW)
+
 option(TESTING_STANDALONE_BUILD "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
 option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
 
