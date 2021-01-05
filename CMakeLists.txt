@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project("testing" CXX)
 
 option(TESTING_STANDALONE_BUILD "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
+option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
 
 if(NOT TARGET testing)
 
@@ -10,14 +11,6 @@ if(NOT TARGET testing)
     ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${CMAKE_CURRENT_BINARY_DIR}
     )
-
-  get_directory_property(hasParent PARENT_DIRECTORY)
-  if (hasParent)
-    set (TESTING_INCLUDE_DIRS ${TESTING_INCLUDE_DIRS} PARENT_SCOPE)
-    set (TESTING_CXX_FLAGS ${TESTING_CXX_FLAGS} PARENT_SCOPE)
-  else()
-    set (TESTING_STANDALONE_BUILD On)
-  endif()
 
   set (TESTING_VERSION_MAJOR 1)
   set (TESTING_VERSION_MINOR 0)
@@ -31,16 +24,29 @@ if(NOT TARGET testing)
     add_definitions(-DCOCOA)
   elseif (UNIX)
     add_definitions(-DX11)
-    set (TESTING_CXX_FLAGS "-std=c++11")
   elseif (WINDOWS)
     add_definitions(-DWIN32)
   endif ()
 
+  if (TESTING_CXX_STANDARD STREQUAL "OFF")
+    set (TESTING_CXX_STANDARD 17)
+  endif ()
+
   message(STATUS "TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
+  message(STATUS "TESTING_CXX_STANDARD: ${TESTING_CXX_STANDARD}")
 
   if (BUILD_FOR_ARM)
     add_definitions(-DBUILD_FOR_ARM -Wno-psabi)
   endif ()
+
+  get_directory_property(hasParent PARENT_DIRECTORY)
+  if (hasParent)
+    set (TESTING_INCLUDE_DIRS ${TESTING_INCLUDE_DIRS} PARENT_SCOPE)
+    set (TESTING_CXX_FLAGS ${TESTING_CXX_FLAGS} PARENT_SCOPE)
+    set (TESTING_CXX_STANDARD ${TESTING_CXX_STANDARD} PARENT_SCOPE)
+  else()
+    set (TESTING_STANDALONE_BUILD On)
+  endif()
 
   include_directories(${TESTING_INCLUDE_DIRS})
   add_definitions(${TESTING_CXX_FLAGS})
@@ -59,7 +65,7 @@ if(NOT TARGET testing)
   set_target_properties(testing PROPERTIES
                         POSITION_INDEPENDENT_CODE ON
                         FOLDER libraries
-                        CXX_STANDARD 11)
+                        CXX_STANDARD ${TESTING_CXX_STANDARD})
 
   if (TESTING_STANDALONE_BUILD)
     install(TARGETS testing DESTINATION ${TESTING_LIBRARY_INSTALL_DIR})
