@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project("testing" CXX)
 
-cmake_policy(SET CMP0077 NEW)
+if(POLICY CMP0077)
+  cmake_policy(SET CMP0077 NEW)
+endif()
 
 option(TESTING_STANDALONE_BUILD "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
 option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
@@ -63,7 +65,7 @@ if(NOT TARGET testing)
   set(INCLUDE_FILES testing.h)
   set(CMAKE_DEBUG_POSTFIX d)
 
-  add_library(testing ${SOURCE_FILES} ${INCLUDE_FILES})
+  add_library(testing STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
   set_target_properties(testing PROPERTIES
                         POSITION_INDEPENDENT_CODE ON
                         FOLDER libraries
