@@ -95,7 +95,7 @@ std::istream& operator>> (std::istream& is, delimited& output) {
   return is;
 }
 
-#if X11 || GUIPP_QT
+#if X11 || __APPLE__
 int main (int argc, char* argv[]) {
   testing::start_params params = { std::vector<std::string>(argv, argv + argc) };
 #endif // X11
