@@ -9,6 +9,12 @@ endif()
 option(TESTING_STANDALONE_BUILD "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
 option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
 
+function(DebugPrint MSG)
+  if(VERBOSE)
+    message(STATUS "${MSG}")
+  endif()
+endfunction(DebugPrint)
+
 if(NOT TARGET testing)
 
   set (TESTING_INCLUDE_DIRS
@@ -36,8 +42,8 @@ if(NOT TARGET testing)
     set (TESTING_CXX_STANDARD 17)
   endif ()
 
-  message(STATUS "TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
-  message(STATUS "TESTING_CXX_STANDARD: ${TESTING_CXX_STANDARD}")
+  DebugPrint("TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
+  DebugPrint("TESTING_CXX_STANDARD: ${TESTING_CXX_STANDARD}")
 
   if (BUILD_FOR_ARM)
     add_definitions(-DBUILD_FOR_ARM -Wno-psabi)
