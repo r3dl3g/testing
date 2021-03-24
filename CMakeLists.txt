@@ -69,7 +69,10 @@ if(NOT TARGET testing)
 
   set(SOURCE_FILES testing.cpp)
   set(INCLUDE_FILES testing.h)
-  set(CMAKE_DEBUG_POSTFIX d)
+
+  if (NOT ANDROID)
+    set(CMAKE_DEBUG_POSTFIX d)
+  endif()
 
   add_library(testing STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
   set_target_properties(testing PROPERTIES
