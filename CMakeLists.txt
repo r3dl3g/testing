@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 project("testing" CXX)
 
+include (GenerateExportHeader)
+include (CMakePackageConfigHelpers)
+include (GNUInstallDirs)
+
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
@@ -26,9 +30,6 @@ if(NOT TARGET testing)
   set (TESTING_VERSION_MINOR 0)
   set (TESTING_VERSION_PATCH 0)
   set (TESTING_VERSION "${TESTING_VERSION_MAJOR}.${TESTING_VERSION_MINOR}.${TESTING_VERSION_PATCH}")
-
-  set (TESTING_INCLUDE_INSTALL_DIR include/testing)
-  set (TESTING_LIBRARY_INSTALL_DIR lib)
 
   if (APPLE)
     add_definitions(-DCOCOA)
@@ -78,14 +79,44 @@ if(NOT TARGET testing)
   set_target_properties(testing PROPERTIES
                         POSITION_INDEPENDENT_CODE ON
                         FOLDER libraries
+                        VERSION ${TESTING_VERSION}
+                        SOVERSION ${TESTING_VERSION}
                         CXX_STANDARD ${TESTING_CXX_STANDARD})
 
   if (TESTING_STANDALONE_BUILD)
-    install(TARGETS testing DESTINATION ${TESTING_LIBRARY_INSTALL_DIR})
+    set (INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
+    set (LIBRARY_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/testing)
+
+    target_include_directories(testing
+                               PUBLIC
+                               "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                               "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>"
+    )
+
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake
+                                     VERSION ${TESTING_VERSION}
+                                     COMPATIBILITY SameMajorVersion)
+
+    install(TARGETS testing
+            EXPORT testingTargets
+            LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR}
+            ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR}
+            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+            INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}
+    )
 
     install(FILES ${INCLUDE_FILES}
-      ${PROJECT_BINARY_DIR}/testing_version.h
-      DESTINATION ${TESTING_INCLUDE_INSTALL_DIR})
-  endif()
+            ${PROJECT_BINARY_DIR}/testing_version.h
+            DESTINATION ${INCLUDE_INSTALL_DIR}
+    )
+
+    install(EXPORT testingTargets
+            FILE testingTargets.cmake
+            NAMESPACE testing::
+            DESTINATION ${LIBRARY_INSTALL_DIR}/cmake
+    )
+
+
+endif()
 
 endif()
