@@ -97,6 +97,10 @@ if(NOT TARGET testing)
                                      VERSION ${TESTING_VERSION}
                                      COMPATIBILITY SameMajorVersion)
 
+    configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
+                                  "${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake"
+                                  INSTALL_DESTINATION ${LIBRARY_INSTALL_DIR})
+
     install(TARGETS testing
             EXPORT testingTargets
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -116,6 +120,12 @@ if(NOT TARGET testing)
             DESTINATION ${LIBRARY_INSTALL_DIR}
     )
 
+    export(TARGETS testing FILE testingTargets.cmake)
+
+    install(FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake"
+            "${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake"
+            DESTINATION ${LIBRARY_INSTALL_DIR})
 
 endif()
 
