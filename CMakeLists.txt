@@ -10,7 +10,7 @@ if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
 endif()
 
-option(TESTING_STANDALONE_BUILD "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
+option(TESTING_CONFIG_INSTALL "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
 option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
 
 function(DebugPrint MSG)
@@ -56,7 +56,7 @@ if(NOT TARGET testing)
     set (TESTING_CXX_FLAGS ${TESTING_CXX_FLAGS} PARENT_SCOPE)
     set (TESTING_CXX_STANDARD ${TESTING_CXX_STANDARD} PARENT_SCOPE)
   else()
-    set (TESTING_STANDALONE_BUILD On)
+    set (TESTING_CONFIG_INSTALL On)
   endif()
 
   include_directories(${TESTING_INCLUDE_DIRS})
@@ -83,9 +83,9 @@ if(NOT TARGET testing)
                         SOVERSION ${TESTING_VERSION}
                         CXX_STANDARD ${TESTING_CXX_STANDARD})
 
-  if (TESTING_STANDALONE_BUILD)
+  if (TESTING_CONFIG_INSTALL)
     set (INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
-    set (LIBRARY_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/testing)
+    set (LIBRARY_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/testing)
 
     target_include_directories(testing
                                PUBLIC
@@ -99,8 +99,8 @@ if(NOT TARGET testing)
 
     install(TARGETS testing
             EXPORT testingTargets
-            LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR}
-            ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR}
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
             INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}
     )
@@ -113,7 +113,7 @@ if(NOT TARGET testing)
     install(EXPORT testingTargets
             FILE testingTargets.cmake
             NAMESPACE testing::
-            DESTINATION ${LIBRARY_INSTALL_DIR}/cmake
+            DESTINATION ${LIBRARY_INSTALL_DIR}
     )
 
 
