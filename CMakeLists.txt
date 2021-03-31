@@ -76,6 +76,8 @@ if(NOT TARGET testing)
   endif()
 
   add_library(testing STATIC ${SOURCE_FILES} ${INCLUDE_FILES})
+  add_library(testing::testing ALIAS testing)
+
   set_target_properties(testing PROPERTIES
                         POSITION_INDEPENDENT_CODE ON
                         FOLDER libraries
