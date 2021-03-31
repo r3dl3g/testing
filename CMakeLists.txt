@@ -99,7 +99,8 @@ if(NOT TARGET testing)
 
     configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
                                   "${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake"
-                                  INSTALL_DESTINATION ${LIBRARY_INSTALL_DIR})
+                                  INSTALL_DESTINATION ${LIBRARY_INSTALL_DIR}
+                                  PATH_VARS CMAKE_INSTALL_INCLUDEDIR)
 
     install(TARGETS testing
             EXPORT testingTargets
