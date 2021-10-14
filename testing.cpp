@@ -104,9 +104,12 @@ int main (int argc, char* argv[]) {
 int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR lpCmdLine, _In_ int) {
   // From https://gist.github.com/mojocorp/d1a0b400abd790f44a53
   if (AttachConsole(ATTACH_PARENT_PROCESS)) {
+#pragma warning(push)
+#pragma warning(disable: 4996)
     freopen("CONIN$", "r", stdin);
     freopen("CONOUT$", "w", stdout);
     freopen("CONOUT$", "w", stderr);
+#pragma warning(pop)
   }
   std::istringstream iss(lpCmdLine);
   typedef std::istream_iterator<delimited> iterator;
