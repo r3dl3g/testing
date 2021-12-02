@@ -22,6 +22,33 @@ namespace testing {
       out << v;
     }
 
+    template<typename T>
+    void print_vector_or_array (std::ostream& os, const T& v) {
+      os << "[";
+      bool first = true;
+      for (const auto& i : v) {
+        if (first) {
+          first = false;
+        } else {
+          os << ", ";
+        }
+        os << i;
+      }
+      os << "]";
+    }
+
+    template<typename T>
+    inline void print_value (std::ostream& os, const std::vector<T>& v) {
+      os << "vector:";
+      print_vector_or_array(os, v);
+    }
+
+    template<typename T, std::size_t S>
+    inline void print_value (std::ostream& os, const std::array<T, S>& a) {
+      os << "array:";
+      print_vector_or_array(os, a);
+    }
+
     template<>
     inline void print_value <unsigned long> (std::ostream& out, const unsigned long& v) {
       out << "0x" << std::hex << v << std::dec;
