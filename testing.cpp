@@ -1,5 +1,19 @@
-// SettingsFile Test: Test for reading and writing the camera settings file
-//
+/**
+* @copyright (c) 2020-2021 Ing. Buero Rothfuss
+*                          Riedlinger Str. 8
+*                          70327 Stuttgart
+*                          Germany
+*                          http://www.rothfuss-web.de
+*
+* @author    <a href="mailto:armin@rothfuss-web.de">Armin Rothfuss</a>
+*
+* Project    testing lib
+*
+* @brief     Small c++ testing framework.
+*
+* @license   MIT license. See accompanying file LICENSE.txt
+*
+*/
 
 #include "testing.h"
 
