@@ -33,12 +33,60 @@ namespace testing {
   namespace detail {
 
     template<typename T>
-    inline void print_value (std::ostream& out, const T& v) {
-      out << v;
-    }
+    struct print {
+      static inline void value (std::ostream& os, const T& v) {
+        os << v;
+      }
+    };
 
     template<typename T>
-    void print_vector_or_array (std::ostream& os, const T& v) {
+    std::ostream& print_vector_or_array (std::ostream& os, const T& v);
+
+    template<typename T>
+    struct print<const std::vector<T>> {
+      static inline void value (std::ostream& os, const std::vector<T>& v) {
+        print_vector_or_array(os << "vector:", v);
+      }
+    };
+
+    template<typename T, std::size_t S>
+    struct print<const std::array<T, S>> {
+      static inline void value (std::ostream& os, const std::array<T, S>& a) {
+        print_vector_or_array(os << "array:", a);
+      }
+    };
+
+    template<>
+    struct print<unsigned long> {
+      static inline void value (std::ostream& out, const unsigned long& v) {
+        out << "0x" << std::hex << v << std::dec;
+      }
+    };
+
+    template<>
+    struct print<unsigned int> {
+      static inline void value (std::ostream& out, const unsigned int& v) {
+        out << "0x" << std::hex << v << std::dec;
+      }
+    };
+
+    template<>
+    struct print<unsigned short> {
+      static inline void value (std::ostream& out, const unsigned short& v) {
+        out << "0x" << std::hex << v << std::dec;
+      }
+    };
+
+    template<>
+    struct print<unsigned char> {
+      static inline void value (std::ostream& out, const unsigned char& v) {
+        out << "0x" << std::hex << v << std::dec;
+        out << "0x" << std::hex << (unsigned short)v << std::dec;
+      }
+    };
+
+    template<typename T>
+    std::ostream& print_vector_or_array (std::ostream& os, const T& v) {
       os << "[";
       bool first = true;
       for (const auto& i : v) {
@@ -47,41 +95,9 @@ namespace testing {
         } else {
           os << ", ";
         }
-        os << i;
+        print<decltype(i)>::value(os, i);
       }
-      os << "]";
-    }
-
-    template<typename T>
-    inline void print_value (std::ostream& os, const std::vector<T>& v) {
-      os << "vector:";
-      print_vector_or_array(os, v);
-    }
-
-    template<typename T, std::size_t S>
-    inline void print_value (std::ostream& os, const std::array<T, S>& a) {
-      os << "array:";
-      print_vector_or_array(os, a);
-    }
-
-    template<>
-    inline void print_value <unsigned long> (std::ostream& out, const unsigned long& v) {
-      out << "0x" << std::hex << v << std::dec;
-    }
-
-    template<>
-    inline void print_value <unsigned int> (std::ostream& out, const unsigned int& v) {
-      out << "0x" << std::hex << v << std::dec;
-    }
-
-    template<>
-    inline void print_value <unsigned short> (std::ostream& out, const unsigned short& v) {
-      out << "0x" << std::hex << v << std::dec;
-    }
-
-    template<>
-    inline void print_value <unsigned char> (std::ostream& out, const unsigned char& v) {
-      out << "0x" << std::hex << (unsigned short)v << std::dec;
+      return os << "]";
     }
 
     inline void print_to_stream (std::ostream&) {}
@@ -110,9 +126,9 @@ namespace testing {
     os << fileName << ":" << lineNumber << ": "
        << "Expected " << testName << " "
        << "to be " << equality << " '";
-    detail::print_value(os, expectedValue);
+    detail::print<T2>::value(os, expectedValue);
     os << "' (" << expectedName << ") but it was '";
-    detail::print_value(os, testValue);
+    detail::print<T1>::value(os, testValue);
     os << "'";
     detail::print_to_stream(os, args...);
   }
