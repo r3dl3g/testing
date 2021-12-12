@@ -28,7 +28,7 @@ if(NOT TARGET testing)
 
   set (TESTING_VERSION_MAJOR 1)
   set (TESTING_VERSION_MINOR 0)
-  set (TESTING_VERSION_PATCH 1)
+  set (TESTING_VERSION_PATCH 2)
   set (TESTING_VERSION "${TESTING_VERSION_MAJOR}.${TESTING_VERSION_MINOR}.${TESTING_VERSION_PATCH}")
 
   if (APPLE)
@@ -65,7 +65,7 @@ if(NOT TARGET testing)
   # header file to pass version settings to the source code
   configure_file (
     "${PROJECT_SOURCE_DIR}/version.h.in"
-    "${PROJECT_BINARY_DIR}/testing_version.h"
+    "${PROJECT_BINARY_DIR}/testing/testing_version.h"
     )
 
   set(SOURCE_FILES testing.cpp)
@@ -86,50 +86,54 @@ if(NOT TARGET testing)
                         CXX_STANDARD ${TESTING_CXX_STANDARD})
 
   if (TESTING_CONFIG_INSTALL)
-    set (INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
-    set (LIBRARY_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/testing)
+    set (TESTING_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
+    set (TESTING_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/cmake/testing)
 
     target_include_directories(testing
-                               PUBLIC
-                               "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
-                               "$<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>"
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:${TESTING_INSTALL_INCLUDEDIR}>
     )
 
     write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake
-                                     VERSION ${TESTING_VERSION}
-                                     COMPATIBILITY SameMajorVersion)
+        VERSION ${TESTING_VERSION}
+        COMPATIBILITY SameMajorVersion
+    )
 
     configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
-                                  "${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake"
-                                  INSTALL_DESTINATION ${LIBRARY_INSTALL_DIR}
-                                  PATH_VARS CMAKE_INSTALL_INCLUDEDIR)
+        ${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake
+        INSTALL_DESTINATION ${TESTING_INSTALL_LIBDIR}
+        PATH_VARS CMAKE_INSTALL_INCLUDEDIR
+    )
 
     install(TARGETS testing
-            EXPORT testingTargets
-            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-            INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}
+        EXPORT testing_Targets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        INCLUDES DESTINATION ${TESTING_INSTALL_INCLUDEDIR}
     )
 
-    install(FILES ${INCLUDE_FILES}
-            ${PROJECT_BINARY_DIR}/testing_version.h
-            DESTINATION ${INCLUDE_INSTALL_DIR}
+    install(FILES
+        ${INCLUDE_FILES}
+        ${PROJECT_BINARY_DIR}/testing/testing_version.h
+        DESTINATION ${TESTING_INSTALL_INCLUDEDIR}
     )
 
-    install(EXPORT testingTargets
-            FILE testingTargets.cmake
-            NAMESPACE testing::
-            DESTINATION ${LIBRARY_INSTALL_DIR}
+    install(EXPORT testing_Targets
+        FILE testingTargets.cmake
+        NAMESPACE testing::
+        DESTINATION ${TESTING_INSTALL_LIBDIR}
     )
 
     export(TARGETS testing FILE testingTargets.cmake)
 
     install(FILES
-            "${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake"
-            "${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake"
-            DESTINATION ${LIBRARY_INSTALL_DIR})
+        ${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake
+        DESTINATION ${TESTING_INSTALL_LIBDIR}
+    )
 
-endif()
+  endif()
 
 endif()

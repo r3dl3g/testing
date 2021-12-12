@@ -1,6 +1,7 @@
 build
 docu
 CMakeLists.txt.user*
+result*
 
 # Prerequisites
 *.d
