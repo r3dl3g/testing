@@ -12,7 +12,7 @@ stdenv.mkDerivation {
 
   enableParallelBuilding = true;
 
-  outputs = [ "dev" "out" ];
+  outputs = [ "out" "dev" ];
 
   cmakeFlags = [
     "-DTESTING_CONFIG_INSTALL=ON"
