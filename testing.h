@@ -20,6 +20,7 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <regex>
 #ifdef WIN32
 #undef NOMINMAX
 #define NOMINMAX
@@ -216,6 +217,10 @@ namespace testing {
   #endif // WIN32
   };
 
+  inline bool regex_test (const std::string& testValue,
+                          const std::string& regexExpression) {
+    return std::regex_match(testValue, std::regex(regexExpression));
+  }
 
 } // namespace testing
 
@@ -254,6 +259,9 @@ void run_test_ (const std::string& name, testing::test_function& fn);
 #define EXPECT_FALSE(test, ...)\
   if (!testing::equal_test<bool, bool>(test, false)) testing::throw_error<bool, bool>(test, false, #test, "false", "equal", __FILE__, __LINE__, ##__VA_ARGS__);
 
+#define EXPECT_REGEX(test, expect, ...)\
+  if (!(testing::regex_test(test, expect))) testing::throw_error(test, expect, #test, #expect, "regex match", __FILE__, __LINE__, ##__VA_ARGS__);
+
 #define TEST_EQUAL(test, expect, ...)\
   if (!(testing::equal_test(test, expect))) testing::log_err(test, expect, #test, #expect, "equal", __FILE__, __LINE__, ##__VA_ARGS__);
 
@@ -277,3 +285,7 @@ void run_test_ (const std::string& name, testing::test_function& fn);
 
 #define TEST_FALSE(test, ...)\
   if (!testing::equal_test<bool, bool>(test, false)) testing::log_err<bool, bool>(test, false, #test, "false", "equal", __FILE__, __LINE__, ##__VA_ARGS__);
+
+#define TEST_REGEX(test, expect, ...)\
+  if (!(testing::regex_test(test, expect))) testing::log_err(test, expect, #test, #expect, "regex match", __FILE__, __LINE__, ##__VA_ARGS__);
+
