@@ -50,8 +50,22 @@ namespace testing {
       }
     };
 
+    template<typename T>
+    struct print<std::vector<T>> {
+      static inline void value (std::ostream& os, const std::vector<T>& v) {
+        print_vector_or_array(os << "vector:", v);
+      }
+    };
+
     template<typename T, std::size_t S>
     struct print<const std::array<T, S>> {
+      static inline void value (std::ostream& os, const std::array<T, S>& a) {
+        print_vector_or_array(os << "array:", a);
+      }
+    };
+
+    template<typename T, std::size_t S>
+    struct print<std::array<T, S>> {
       static inline void value (std::ostream& os, const std::array<T, S>& a) {
         print_vector_or_array(os << "array:", a);
       }
