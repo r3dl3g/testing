@@ -44,6 +44,9 @@ namespace testing {
     std::ostream& print_vector_or_array (std::ostream& os, const T& v);
 
     template<typename T>
+    std::ostream& print_ptr (std::ostream& os, const T& v);
+
+    template<typename T>
     struct print<const std::vector<T>> {
       static inline void value (std::ostream& os, const std::vector<T>& v) {
         print_vector_or_array(os << "vector:", v);
@@ -68,6 +71,20 @@ namespace testing {
     struct print<std::array<T, S>> {
       static inline void value (std::ostream& os, const std::array<T, S>& a) {
         print_vector_or_array(os << "array:", a);
+      }
+    };
+
+    template<typename T>
+    struct print<std::unique_ptr<T>> {
+      static inline void value (std::ostream& os, const std::unique_ptr<T>& p) {
+        print_ptr(os << "unique_ptr:", p);
+      }
+    };
+
+    template<typename T>
+    struct print<std::shared_ptr<T>> {
+      static inline void value (std::ostream& os, const std::shared_ptr<T>& p) {
+        print_ptr(os << "shared_ptr:", p);
       }
     };
 
@@ -113,6 +130,16 @@ namespace testing {
         print<decltype(i)>::value(os, i);
       }
       return os << "]";
+    }
+
+    template<typename T>
+    std::ostream& print_ptr (std::ostream& os, const T& p) {
+      if (p) {
+        os << *p;
+      } else {
+        os << "null";
+      }
+      return os;
     }
 
     inline void print_to_stream (std::ostream&) {}
