@@ -47,23 +47,9 @@ namespace testing {
     std::ostream& print_ptr (std::ostream& os, const T& v);
 
     template<typename T>
-    struct print<const std::vector<T>> {
-      static inline void value (std::ostream& os, const std::vector<T>& v) {
-        print_vector_or_array(os << "vector:", v);
-      }
-    };
-
-    template<typename T>
     struct print<std::vector<T>> {
       static inline void value (std::ostream& os, const std::vector<T>& v) {
         print_vector_or_array(os << "vector:", v);
-      }
-    };
-
-    template<typename T, std::size_t S>
-    struct print<const std::array<T, S>> {
-      static inline void value (std::ostream& os, const std::array<T, S>& a) {
-        print_vector_or_array(os << "array:", a);
       }
     };
 
@@ -85,6 +71,44 @@ namespace testing {
     struct print<std::shared_ptr<T>> {
       static inline void value (std::ostream& os, const std::shared_ptr<T>& p) {
         print_ptr(os << "shared_ptr:", p);
+      }
+    };
+
+    template<typename K, typename V, typename C>
+    struct print<std::map<K, V, C>> {
+      static inline void value (std::ostream& os, const std::map<K, V, C>& m) {
+        os << "map:{";
+        for (const auto& e : m) {
+          print<K>::value(os, e.first);
+          os << "=";
+          print<V>::value(os, e.second);
+        }
+        os << "}";
+      }
+    };
+
+    template<typename T1, typename T2>
+    struct print< std::pair<T1, T2>> {
+      static inline void value (std::ostream& os, const std::pair<T1, T2>& m) {
+        os << "pair:[";
+        print<T1>::value(os, m.first);
+        os << ",";
+        print<T2>::value(os, m.second);
+        os << "]";
+      }
+    };
+
+    template<>
+    struct print<std::string> {
+      static inline void value (std::ostream& os, const std::string& m) {
+        os << "\"" << m << "\"";
+      }
+    };
+
+    template<>
+    struct print<char const*> {
+      static inline void value (std::ostream& os, char const* m) {
+        os << "\"" << m << "\"";
       }
     };
 
@@ -112,8 +136,7 @@ namespace testing {
     template<>
     struct print<unsigned char> {
       static inline void value (std::ostream& out, const unsigned char& v) {
-        out << "0x" << std::hex << v << std::dec;
-        out << "0x" << std::hex << (unsigned short)v << std::dec;
+        out << "0x" << std::hex << (int)v << std::dec;
       }
     };
 

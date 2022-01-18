@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-project("testing" LANGUAGES CXX VERSION 1.2.0)
+project("testing" LANGUAGES CXX VERSION 1.3.0)
 
 include (GenerateExportHeader)
 include (CMakePackageConfigHelpers)
