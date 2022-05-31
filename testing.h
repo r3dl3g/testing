@@ -28,8 +28,6 @@
 #include <windows.h>
 #endif // WIN32
 
-#include <util/vector_util.h>
-
 
 using namespace std;
 
@@ -46,7 +44,7 @@ namespace testing {
 
     template<typename T>
     void print_value (std::ostream& os, const T& v) {
-      print<std::remove_const<T>::type>::value(os, v);
+      print<typename std::remove_const<T>::type>::value(os, v);
     }
 
     template<typename T>
@@ -64,7 +62,7 @@ namespace testing {
 
     template<typename T, std::size_t S>
     struct print<std::array<T, S>> {
-      static inline void value(std::ostream& os, const std::array<T, S>& v) {
+      static inline void value(std::ostream& os, const std::array<T, S>& a) {
         print_vector_or_array(os << "array:", a);
       }
     };
