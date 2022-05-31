@@ -19,6 +19,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <map>
 #include <functional>
 #include <regex>
 #ifdef WIN32
@@ -26,6 +27,9 @@
 #define NOMINMAX
 #include <windows.h>
 #endif // WIN32
+
+#include <util/vector_util.h>
+
 
 using namespace std;
 
@@ -39,6 +43,11 @@ namespace testing {
         os << v;
       }
     };
+
+    template<typename T>
+    void print_value (std::ostream& os, const T& v) {
+      print<std::remove_const<T>::type>::value(os, v);
+    }
 
     template<typename T>
     std::ostream& print_vector_or_array (std::ostream& os, const T& v);
@@ -55,7 +64,7 @@ namespace testing {
 
     template<typename T, std::size_t S>
     struct print<std::array<T, S>> {
-      static inline void value (std::ostream& os, const std::array<T, S>& a) {
+      static inline void value(std::ostream& os, const std::array<T, S>& v) {
         print_vector_or_array(os << "array:", a);
       }
     };
@@ -79,9 +88,9 @@ namespace testing {
       static inline void value (std::ostream& os, const std::map<K, V, C>& m) {
         os << "map:{";
         for (const auto& e : m) {
-          print<K>::value(os, e.first);
+          print_value(os, e.first);
           os << "=";
-          print<V>::value(os, e.second);
+          print_value(os, e.second);
         }
         os << "}";
       }
@@ -91,9 +100,9 @@ namespace testing {
     struct print< std::pair<T1, T2>> {
       static inline void value (std::ostream& os, const std::pair<T1, T2>& m) {
         os << "pair:[";
-        print<T1>::value(os, m.first);
+        print_value(os, m.first);
         os << ",";
-        print<T2>::value(os, m.second);
+        print_value(os, m.second);
         os << "]";
       }
     };
@@ -106,7 +115,7 @@ namespace testing {
     };
 
     template<>
-    struct print<char const*> {
+    struct print<char*> {
       static inline void value (std::ostream& os, char const* m) {
         os << "\"" << m << "\"";
       }
@@ -150,7 +159,7 @@ namespace testing {
         } else {
           os << ", ";
         }
-        print<decltype(i)>::value(os, i);
+        print_value(os, i);
       }
       return os << "]";
     }
@@ -168,9 +177,9 @@ namespace testing {
     inline void print_to_stream (std::ostream&) {}
 
     template<typename Head, typename...Tail>
-    void print_to_stream (std::ostream& stream, const Head& h, const Tail&... t) {
+    void print_to_stream (std::ostream& stream, const Head& h, const Tail&... tail) {
       stream << h;
-      print_to_stream(stream, t...);
+      print_to_stream(stream, tail...);
     }
 
   } // namespace detail
@@ -191,9 +200,9 @@ namespace testing {
     os << fileName << ":" << lineNumber << ": "
        << "Expected " << testName << " "
        << "to be " << equality << " '";
-    detail::print<T2>::value(os, expectedValue);
+    detail::print_value(os, expectedValue);
     os << "' (" << expectedName << ") but it was '";
-    detail::print<T1>::value(os, testValue);
+    detail::print_value(os, testValue);
     os << "'";
     detail::print_to_stream(os, args...);
   }
