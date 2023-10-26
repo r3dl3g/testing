@@ -22,7 +22,7 @@ set(TESTING_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(TESTING_VERSION "${PROJECT_VERSION}")
 
 option(TESTING_CONFIG_INSTALL "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
-option(TESTING_CXX_STANDARD "C++ standard to overwrite default cmake standard" ${CMAKE_CXX_STANDARD})
+set(TESTING_CXX_STANDARD "${CMAKE_CXX_STANDARD}" CACHE STRING "C++ standard to overwrite default cmake standard")
 
 function(DebugPrint MSG)
   if(VERBOSE)
