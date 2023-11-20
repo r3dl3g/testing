@@ -1,10 +1,20 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-project("testing" LANGUAGES CXX VERSION 1.3.1)
+file(READ "derivation.nix" derivation_ver)
+string(REGEX MATCH "version = \"([0-9\.]+)\"" _ ${derivation_ver})
+set(project_version ${CMAKE_MATCH_1})
+
+message("Building util version: ${project_version}")
+
+project("testing" LANGUAGES CXX VERSION ${project_version})
 
 include (GenerateExportHeader)
 include (CMakePackageConfigHelpers)
 include (GNUInstallDirs)
+
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/obj)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 if(POLICY CMP0077)
   cmake_policy(SET CMP0077 NEW)
@@ -43,10 +53,6 @@ if(NOT TARGET testing)
     add_definitions(-DX11)
   elseif(WINDOWS)
     add_definitions(-DWIN32)
-  endif()
-
-  if(TESTING_CXX_STANDARD STREQUAL "OFF")
-    set(TESTING_CXX_STANDARD 17)
   endif()
 
   DebugPrint("TESTING_CXX_FLAGS: ${TESTING_CXX_FLAGS}")
