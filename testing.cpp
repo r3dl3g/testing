@@ -29,12 +29,66 @@ using namespace std;
 
 namespace testing {
 
+    // doubles may differ below 1.0E-15
+  const double MAX_DOUBLE_DIFF = 1.0E-15;
+    // floats may differ below 1.0E-4
+  const double MAX_FLOAT_DIFF = 1.0E-4;
+  const float MAX_FLOAT_DIFF_F = 1.0E-4F;
+
   template<>
-  bool equal_test (const double& testValue,
-                   const double& expectedValue) {
-    // doubles may differ below 1.0E-7
-    const double diff = fabs(testValue - expectedValue);
-    return (diff < 1.0E-7);
+  bool almost_equal_test (const double& testValue,
+                          const double& expectedValue) {
+    int testExponent, expectedExponent;
+    const double testFraction = frexp(testValue, &testExponent);
+    const double expectedFraction = frexp(expectedValue, &expectedExponent);
+    const double fraction_diff = fabs(testFraction - expectedFraction);
+    if ((testExponent != expectedExponent) || (fraction_diff > MAX_DOUBLE_DIFF)) {
+      // this is to allow setting a break point !
+      return false;
+    }
+    return true;
+  }
+
+  template<>
+  bool almost_equal_test (const float& testValue,
+                          const double& expectedValue) {
+    int testExponent, expectedExponent;
+    const float testFraction = frexp(testValue, &testExponent);
+    const double expectedFraction = frexp(expectedValue, &expectedExponent);
+    const double fraction_diff = fabs(testFraction - expectedFraction);
+    if ((testExponent != expectedExponent) || (fraction_diff > MAX_FLOAT_DIFF)) {
+      // this is to allow setting a break point !
+      return false;
+    }
+    return true;
+  }
+
+  template<>
+  bool almost_equal_test (const double& testValue,
+                          const float& expectedValue) {
+    int testExponent, expectedExponent;
+    const double testFraction = frexp(testValue, &testExponent);
+    const float expectedFraction = frexp(expectedValue, &expectedExponent);
+    const double fraction_diff = fabs(testFraction - expectedFraction);
+    if ((testExponent != expectedExponent) || (fraction_diff > MAX_FLOAT_DIFF)) {
+      // this is to allow setting a break point !
+      return false;
+    }
+    return true;
+  }
+
+  template<>
+  bool almost_equal_test (const float& testValue,
+                          const float& expectedValue) {
+    int testExponent, expectedExponent;
+    const float testFraction = frexp(testValue, &testExponent);
+    const float expectedFraction = frexp(expectedValue, &expectedExponent);
+    const float fraction_diff = fabs(testFraction - expectedFraction);
+    if ((testExponent != expectedExponent) || (fraction_diff > MAX_FLOAT_DIFF_F)) {
+      // this is to allow setting a break point !
+      return false;
+    }
+    return true;
   }
 
   std::string string_from_file (const char* filename) {

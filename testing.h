@@ -28,6 +28,11 @@
 #include <windows.h>
 #endif // WIN32
 
+#if defined(__GNUC__) && not defined(NDEBUG)
+#define NO_OPTIMIZATION  __attribute__((optimize(0)))
+#else
+#define NO_OPTIMIZATION
+#endif
 
 using namespace std;
 
@@ -250,6 +255,12 @@ namespace testing {
   }
 
   template<typename T1, typename T2>
+  bool almost_equal_test (const T1& testValue,
+                          const T2& expectedValue) {
+    return testValue == expectedValue;
+  }
+
+  template<typename T1, typename T2>
   bool lower_test (const T1& testValue,
                    const T2& expectedValue) {
     return testValue < expectedValue;
@@ -274,8 +285,20 @@ namespace testing {
   }
 
   template<>
-  bool equal_test (const double& testValue,
-                   const double& expectedValue);
+  bool almost_equal_test (const double& testValue,
+                          const double& expectedValue) NO_OPTIMIZATION;
+
+  template<>
+  bool almost_equal_test (const float& testValue,
+                          const double& expectedValue) NO_OPTIMIZATION;
+
+  template<>
+  bool almost_equal_test (const double& testValue,
+                          const float& expectedValue) NO_OPTIMIZATION;
+
+  template<>
+  bool almost_equal_test (const float& testValue,
+                          const float& expectedValue) NO_OPTIMIZATION;
 
   std::string string_from_file (const char* filename);
 
@@ -308,6 +331,9 @@ void run_test_ (const std::string& name, testing::test_function& fn);
 
 #define EXPECT_EQUAL(test, expect, ...)\
   if (!(testing::equal_test(test, expect))) testing::throw_error(test, expect, #test, #expect, "equal", __FILE__, __LINE__, ##__VA_ARGS__);
+
+#define EXPECT_ALMOST_EQUAL(test, expect, ...)\
+  if (!(testing::almost_equal_test(test, expect))) testing::throw_error(test, expect, #test, #expect, "almost_equal", __FILE__, __LINE__, ##__VA_ARGS__);
 
 #define EXPECT_NOT_EQUAL(test, expect, ...)\
   if (testing::equal_test(test, expect)) testing::throw_error(test, expect, #test, #expect, "not equal", __FILE__, __LINE__, ##__VA_ARGS__);
