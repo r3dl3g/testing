@@ -42,6 +42,10 @@ endfunction(DebugPrint)
 
 if(NOT TARGET testing)
 
+  if (TESTING_CXX_STANDARD STREQUAL "")
+    set (TESTING_CXX_STANDARD 17)
+  endif ()
+
   set(TESTING_INCLUDE_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${CMAKE_CURRENT_BINARY_DIR}
