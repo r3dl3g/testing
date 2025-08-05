@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
 file(READ "derivation.nix" derivation_ver)
 string(REGEX MATCH "version = \"([0-9\.]+)\"" _ ${derivation_ver})
@@ -31,7 +31,7 @@ set(TESTING_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(TESTING_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 set(TESTING_VERSION "${PROJECT_VERSION}")
 
-option(TESTING_CONFIG_INSTALL "On to make an installable standalone build, Off to build as part of a project. Default Off" OFF)
+option(TESTING_CONFIG_INSTALL "On to make an installable standalone build, Off to build as part of a project. Default Off" ON)
 set(TESTING_CXX_STANDARD "${CMAKE_CXX_STANDARD}" CACHE STRING "C++ standard to overwrite default cmake standard")
 
 function(DebugPrint MSG)

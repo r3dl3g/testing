@@ -12,11 +12,12 @@ stdenv.mkDerivation {
 
   enableParallelBuilding = true;
 
-  outputs = [ "out" "dev" ];
+  outputs = [ "dev" "out" ];
 
   cmakeFlags = [
     "-DTESTING_CONFIG_INSTALL=ON"
     "-DTESTING_BUILD_STATIC_MODULE_LIB=OFF"
+    "-DCMAKE_INSTALL_PREFIX=$out"
   ];
 
   meta = with lib; {

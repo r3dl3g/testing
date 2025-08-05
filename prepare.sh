@@ -1,2 +1,4 @@
 echo ======= New Prepare at $(date) ======= >> prepare.log
-cmake -S. -Bbuild -DCMAKE_INSTALL_PREFIX=../libs -DTESTING_CONFIG_INSTALL=ON -DTESTING_BUILD_STATIC_MODULE_LIB=OFF $* 2>&1 | tee -a prepare.log
+defines="-DCMAKE_INSTALL_PREFIX=$HOME/install -DCMAKE_PREFIX_PATH=$HOME/install"
+cmake -S. -B $HOME/build/${PWD##*/}/Debug -DCMAKE_BUILD_TYPE=Debug $defines $* 2>&1 | tee -a prepare.log
+cmake -S. -B $HOME/build/${PWD##*/}/Release -DCMAKE_BUILD_TYPE=Release $defines $* 2>&1 | tee -a prepare.log
