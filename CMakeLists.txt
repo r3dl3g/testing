@@ -51,6 +51,8 @@ if(NOT TARGET testing)
     ${CMAKE_CURRENT_BINARY_DIR}
     )
 
+  set(TESTING_LIBRARIES testing::testing)
+
   if(APPLE)
     add_definitions(-DCOCOA)
   elseif(UNIX)
@@ -69,6 +71,7 @@ if(NOT TARGET testing)
   get_directory_property(hasParent PARENT_DIRECTORY)
   if(hasParent)
     set(TESTING_INCLUDE_DIRS ${TESTING_INCLUDE_DIRS} PARENT_SCOPE)
+    set(TESTING_LIBRARIES ${TESTING_LIBRARIES} PARENT_SCOPE)
     set(TESTING_CXX_FLAGS ${TESTING_CXX_FLAGS} PARENT_SCOPE)
     set(TESTING_CXX_STANDARD ${TESTING_CXX_STANDARD} PARENT_SCOPE)
   else()
