@@ -29,7 +29,7 @@
 #include <windows.h>
 #endif // WIN32
 
-#if defined(__GNUC__) && not defined(NDEBUG)
+#if defined(__GNUC__) && not defined(NDEBUG) && not defined(__EMSCRIPTEN__)
 #define NO_OPTIMIZATION  __attribute__((optimize(0)))
 #else
 #define NO_OPTIMIZATION
