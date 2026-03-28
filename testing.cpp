@@ -163,11 +163,6 @@ std::istream& operator>> (std::istream& is, delimited& output) {
   return is;
 }
 
-#if X11 || __APPLE__
-int main (int argc, char* argv[]) {
-  testing::start_params params = { std::vector<std::string>(argv, argv + argc) };
-#endif // X11
-
 #ifdef WIN32
 int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR lpCmdLine, _In_ int) {
   // From https://gist.github.com/mojocorp/d1a0b400abd790f44a53
@@ -182,6 +177,9 @@ int APIENTRY WinMain (_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPTSTR 
   std::istringstream iss(lpCmdLine);
   typedef std::istream_iterator<delimited> iterator;
   testing::start_params params = { std::vector<std::string>(iterator{iss}, iterator{}), hInstance };
+#else
+int main (int argc, char* argv[]) {
+  testing::start_params params = { std::vector<std::string>(argv, argv + argc) };
 #endif // WIN32
 
   if (testing::test_init) {
