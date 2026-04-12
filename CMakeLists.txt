@@ -107,13 +107,22 @@ if(NOT TARGET testing)
                         CXX_STANDARD ${TESTING_CXX_STANDARD})
 
   if(TESTING_CONFIG_INSTALL)
-    set(TESTING_INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
-    set(TESTING_INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR}/cmake/testing)
+
+    if (CMAKE_CXX_PLATFORM_ID STREQUAL MinGW)
+      set(OUTPUT_NAME testing-mingw)
+    elseif(EMSCRIPTEN)
+      set(OUTPUT_NAME testing-emc)
+    else()
+      set(OUTPUT_NAME testing)
+    endif()
+
+    set(TESTING_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
+    set(TESTING_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${OUTPUT_NAME})
 
     target_include_directories(testing
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:${TESTING_INSTALL_INCLUDEDIR}>
+        $<INSTALL_INTERFACE:${TESTING_INSTALL_INCLUDE_DIR}>
     )
 
     write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake
@@ -123,7 +132,7 @@ if(NOT TARGET testing)
 
     configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake
-        INSTALL_DESTINATION ${TESTING_INSTALL_LIBDIR}
+        INSTALL_DESTINATION ${TESTING_INSTALL_CMAKE_DIR}
         PATH_VARS CMAKE_INSTALL_INCLUDEDIR
     )
 
@@ -132,19 +141,19 @@ if(NOT TARGET testing)
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        INCLUDES DESTINATION ${TESTING_INSTALL_INCLUDEDIR}
+        INCLUDES DESTINATION ${TESTING_INSTALL_INCLUDE_DIR}
     )
 
     install(FILES
         ${INCLUDE_FILES}
         ${PROJECT_BINARY_DIR}/testing/testing_version.h
-        DESTINATION ${TESTING_INSTALL_INCLUDEDIR}
+        DESTINATION ${TESTING_INSTALL_INCLUDE_DIR}
     )
 
     install(EXPORT testing_Targets
         FILE testingTargets.cmake
         NAMESPACE testing::
-        DESTINATION ${TESTING_INSTALL_LIBDIR}
+        DESTINATION ${TESTING_INSTALL_CMAKE_DIR}
     )
 
     export(TARGETS testing FILE testingTargets.cmake)
@@ -152,7 +161,7 @@ if(NOT TARGET testing)
     install(FILES
         ${CMAKE_CURRENT_BINARY_DIR}/testingConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/testingConfigVersion.cmake
-        DESTINATION ${TESTING_INSTALL_LIBDIR}
+        DESTINATION ${TESTING_INSTALL_CMAKE_DIR}
     )
 
   endif()
