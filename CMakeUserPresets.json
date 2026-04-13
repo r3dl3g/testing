@@ -7,7 +7,11 @@
             "binaryDir": "$env{HOME}/.cache/build/${sourceDirName}/${presetName}",
             "generator": "Unix Makefiles",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "$env{HOME}/.local"
+                "CMAKE_INSTALL_PREFIX": "$env{HOME}/.local/$env{MACHINE}",
+                "CMAKE_FIND_ROOT_PATH_MODE_PROGRAM": "NEVER",
+                "CMAKE_FIND_ROOT_PATH_MODE_LIBRARY": "ONLY",
+                "CMAKE_FIND_ROOT_PATH_MODE_INCLUDE": "ONLY",
+                "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "ONLY"
             }
         },
         {
@@ -63,11 +67,7 @@
             "cacheVariables": {
                 "WIN32": "ON",
                 "CMAKE_SYSTEM_NAME": "Windows",
-                "CMAKE_SYSTEM_PROCESSOR": "x86_64",
-                "CMAKE_FIND_ROOT_PATH_MODE_PROGRAM": "NEVER",
-                "CMAKE_FIND_ROOT_PATH_MODE_LIBRARY": "ONLY",
-                "CMAKE_FIND_ROOT_PATH_MODE_INCLUDE": "ONLY",
-                "CMAKE_FIND_ROOT_PATH_MODE_PACKAGE": "ONLY"
+                "CMAKE_SYSTEM_PROCESSOR": "x86_64"
             }
         },
         {

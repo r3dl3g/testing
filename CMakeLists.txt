@@ -46,11 +46,6 @@ if(NOT TARGET testing)
     set (TESTING_CXX_STANDARD 17)
   endif ()
 
-  set(TESTING_INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-    )
-
   set(TESTING_LIBRARIES testing::testing)
 
   if(APPLE)
@@ -80,13 +75,13 @@ if(NOT TARGET testing)
     set(TESTING_CONFIG_INSTALL On)
   endif()
 
-  include_directories(${TESTING_INCLUDE_DIRS})
+  include_directories(${TESTING_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
   add_definitions(${TESTING_CXX_FLAGS})
 
   # header file to pass version settings to the source code
   configure_file (
     "${PROJECT_SOURCE_DIR}/version.h.in"
-    "${PROJECT_BINARY_DIR}/testing/testing_version.h"
+    "${PROJECT_BINARY_DIR}/testing_version.h"
     )
 
   set(SOURCE_FILES testing.cpp)
@@ -108,16 +103,8 @@ if(NOT TARGET testing)
 
   if(TESTING_CONFIG_INSTALL)
 
-    if (CMAKE_CXX_PLATFORM_ID STREQUAL MinGW)
-      set(OUTPUT_NAME testing-mingw)
-    elseif(EMSCRIPTEN)
-      set(OUTPUT_NAME testing-emc)
-    else()
-      set(OUTPUT_NAME testing)
-    endif()
-
     set(TESTING_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/testing)
-    set(TESTING_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${OUTPUT_NAME})
+    set(TESTING_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/testing)
 
     target_include_directories(testing
         PUBLIC
@@ -146,7 +133,7 @@ if(NOT TARGET testing)
 
     install(FILES
         ${INCLUDE_FILES}
-        ${PROJECT_BINARY_DIR}/testing/testing_version.h
+        ${PROJECT_BINARY_DIR}/testing_version.h
         DESTINATION ${TESTING_INSTALL_INCLUDE_DIR}
     )
 
